@@ -1,0 +1,51 @@
+---
+- name: server checkup
+  hosts: all
+  become: yes
+
+  tasks:
+   - name: check if user exist
+     shell: |
+       #!/bin/bash
+       if id "$orortio" >/dev/null 2>&1; then
+           echo "User  exists."
+       else
+           echo "User  does not exist."
+       fi
+
+   - name: check free space 
+     shell: |
+       #!/bin/bash
+       if [ $(df -m --output=avail /|tail -n1) -lt 200 ]; then
+        echo "there is enough space"
+       else
+        echo "there is not enough space"
+       fi
+   - name: check if services are runing
+     shell: |
+       #!/bin/bash
+       SERVICE="docker"
+       if pgrep -x "$SERVICE" >/dev/null
+       then
+           echo "$SERVICE is running"
+       else
+           echo "$SERVICE stopped"  
+       fi
+   - name: check if the file has changed
+     shell: |
+       #!/bin/bash
+       
+       today=$(date +"%Y-%m-%d")
+
+      
+       yesterday=$(date -d "-1 day" +"%Y-%m-%d")
+
+        
+       file_mtime=$(stat -c "%Y-%m-%d" /etc/fstab)
+
+        
+       if [ "$file_mtime" = "$yesterday" ]; then
+         echo "The file was modified yesterday."
+       else
+         echo "The file was not modified yesterday."
+       fi

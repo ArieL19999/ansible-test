@@ -1,0 +1,11 @@
+---
+- name: docker pull and init
+  hosts: all
+  become: yes
+
+  tasks:
+   - name: Pull Nginx Docker image
+     shell: docker pull nginx
+     
+   - name: docker init
+     shell: docker swarm init

@@ -1,0 +1,13 @@
+---
+- hosts: all
+  tasks:
+  - name: Package installation
+    ansible.builtin.apt:
+      name:
+        - runc
+        - containerd
+        - docker
+        - docker.io
+      state: latest
+      update_cache: true
+
